@@ -5,7 +5,7 @@
  */
 package com.aldea.cristo.persistencia.entities;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDate;
 
 /**
