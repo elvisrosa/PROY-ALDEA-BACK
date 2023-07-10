@@ -6,8 +6,7 @@
 package com.aldea.cristo.persistencia.entities;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
-
+import java.sql.Timestamp;
 /**
  *
  * @author elvis
@@ -16,21 +15,23 @@ import java.time.LocalDate;
 @Table(name = "user_role")
 @IdClass(UserRoleId.class)
 public class UserRolEntity {
-
-    @Id
+    
+    
+    
+     @Id
     @Column(nullable = false, length = 20)
     private String username;
 
     @Id
     @Column(nullable = false, length = 20)
     private String role;
-   
-    @Column(name = "granted_date", nullable = false, columnDefinition = "date")
-    private LocalDate grantedDate;
+
+    @Column(name = "granted_date", nullable = false, columnDefinition = "TIMESTAMP")
+    private Timestamp grantedDate;
 
     @ManyToOne
     @JoinColumn(name = "username", referencedColumnName = "username", insertable = false, updatable = false)
-    private UserEntity user;
+    private UserEntity user; 
 
     public String getUsername() {
         return username;
@@ -48,11 +49,11 @@ public class UserRolEntity {
         this.role = role;
     }
 
-    public LocalDate getGrantedDate() {
+    public Timestamp getGrantedDate() {
         return grantedDate;
     }
 
-    public void setGrantedDate(LocalDate grantedDate) {
+    public void setGrantedDate(Timestamp grantedDate) {
         this.grantedDate = grantedDate;
     }
 

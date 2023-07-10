@@ -13,12 +13,13 @@ public class jwtUtil {
     private static final String SECRET_KEY = "4ld3a-cr1st0";
     private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET_KEY);
 
+    //Al crear el token deberias mandarle los datos del usuario- todos, es decir una entidad de tipo USerEntity
     public String create(String username) {
         return JWT.create()
                 .withSubject(username)
                 .withIssuer("aldea-cristo")
                 .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(10)))
+                .withExpiresAt(new Date(System.currentTimeMillis() + TimeUnit.DAYS.toMillis(1)))
                 .sign(ALGORITHM);
     }
 

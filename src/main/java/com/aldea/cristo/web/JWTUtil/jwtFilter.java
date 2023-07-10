@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.aldea.cristo.web.JWTUtil;
 
 import jakarta.servlet.FilterChain;
@@ -18,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -25,7 +21,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class jwtFilter extends OncePerRequestFilter {
 
     private final static Logger logger = LoggerFactory.getLogger(jwtUtil.class);
-    
+
     private final jwtUtil jwtUtil;
     private final UserDetailsService userDetailService;
 
@@ -40,13 +36,13 @@ public class jwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         //BTENERMOS EL TOKEN DESDE LA CABEZERA DE LA PETICIÓN
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header == null || header.isEmpty() || !header.startsWith("Bearer")) {
+        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer")) {
             filterChain.doFilter(request, response);
             return;
         }
         //SEPARAMOS EL TOKEN DEL BEARER BEARE TOKEN
-        String jwt = header.split(" ")[1].trim();
+        String jwt = authHeader.split(" ")[1].trim();
 
         //VALIDAMOS SI EL TOKEN ES VALIDO       
         if (!jwtUtil.isValid(jwt)) {
@@ -57,14 +53,22 @@ public class jwtFilter extends OncePerRequestFilter {
         //CARGAR USUARIO DESDE USERDETAILSERVICE
         String username = jwtUtil.getUsername(jwt);
         User user = (User) this.userDetailService.loadUserByUsername(username);
-        logger.info("user" + user.toString());
+      
 
         //CARGAR AL USUARIO EN EL CONTEXTO DE SEGURIDAD
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword(), user.getAuthorities());
+                user.getUsername(), user.getPassword(), user.getAuthorities()
+        );
 
+        //Agregar detalles a la authenticacion del usuario
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        System.out.println("Datos del authenticationToken" + authenticationToken);
+        logger.info("Datos del authenticationToken " + authenticationToken);
         filterChain.doFilter(request, response);
+
+        //SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        //filterChain.doFilter(request, response);
     }
 
 }

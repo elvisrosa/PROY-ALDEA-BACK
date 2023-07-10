@@ -4,57 +4,39 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "usuario")
 public class UserEntity {
 
     @Id
-    @Column(name = "username", nullable = false, length = 20)
+    @Column(nullable = false, length = 20)
     private String username;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    @Column(name = "id_usuario")
+    private Integer idUsuario;
 
-    @Column(name = "email")
-    private String email;
+    private String nombre;
 
-    @Column(name = "locked")
+    @Column(name = "bloqueado")
     private Boolean locked;
 
-    @Column(name = "disabled")
+    @Column(name = "deshabilitado")
     private Boolean disabled;
-
-    
-    @Column(name = "password", nullable = false, length = 200)
+     
+    @Column(name = "contrasena", nullable = false, length = 200)
     private String password;
+    
+    private String correo;
     
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<UserRolEntity> roles;
-    
-    
-
+      
     public String getUsername() {
         return username;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Boolean getLocked() {
@@ -88,6 +70,44 @@ public class UserEntity {
     public void setRoles(List<UserRolEntity> roles) {
         this.roles = roles;
     }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public String getCorreo() {
+        return correo;
+    }
+
+    public void setCorreo(String correo) {
+        this.correo = correo;
+    }
+
+    public Integer getIdUsuario() {
+        return idUsuario;
+    }
+
+    public void setIdUsuario(Integer idUsuario) {
+        this.idUsuario = idUsuario;
+    }
+    
+    
+
+    @Override
+    public String toString() {
+
+        return "UserEntity{" + "username=" + username + ", nombre=" + nombre + ", locked=" + locked + ", disabled=" + disabled + ", password=" + password + ", correo=" + correo + ", roles=" + roles + '}';
+    }
+
+    
+ 
+    
+    
     
     
     

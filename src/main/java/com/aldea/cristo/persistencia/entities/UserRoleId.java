@@ -18,28 +18,15 @@ public class UserRoleId implements Serializable {
     private String role;
 
     @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 97 * hash + Objects.hashCode(this.username);
-        return hash;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserRoleId that)) return false;
+        return Objects.equals(username, that.username) && Objects.equals(role, that.role);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final UserRoleId other = (UserRoleId) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(username, role);
     }
 
     

@@ -1,44 +1,55 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.aldea.cristo.web.configAuth;
 
+import com.aldea.cristo.web.JWTUtil.jwtFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-/**
- *
- * @author elvis
- */
 @Configuration
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
+
+    private final jwtFilter fwtfilter;
+
+    @Autowired
+    public SecurityConfig(jwtFilter fwtFilter) {
+        this.fwtfilter = fwtFilter;
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                //Permite no giardar sesiones y que en cada sesion se valide el jwt
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authz)
                         -> authz
-                        //.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        //.requestMatchers(HttpMethod.GET, "/api/**").permitAll()"
+                        .requestMatchers(HttpMethod.GET, "/api/saludo/**").hasRole("CUSTOMER")
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "CUSTOMER", "OTRO")
                         .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
-                        .requestMatchers("/api/api2/randon").hasAuthority("randon_order")
+                        .requestMatchers("/api/**").hasRole("ADMIN")
+                        .requestMatchers("/api/eliminar/**").hasRole("ADMIN")
+                        //.requestMatchers("/api/api2/randon").hasAuthority("randon_order")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(withDefaults())
-                .cors(withDefaults());
+                .cors(withDefaults())
+                //.httpBasic(withDefaults());
+                .addFilterBefore(fwtfilter, UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
 
@@ -70,4 +81,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManeger(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
 }
