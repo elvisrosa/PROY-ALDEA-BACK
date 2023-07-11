@@ -1,12 +1,11 @@
 package com.aldea.cristo.persistencia.entities;
-
 import jakarta.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "bautismo")
 public class BautismoEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_bautismo", nullable = false)
@@ -20,15 +19,12 @@ public class BautismoEntity {
 
     @Column(name = "matrimonios_padres")
     private String matrimoniosPadres;
-    
+
     //@OneToMany(mappedBy = "bautismo", fetch = FetchType.EAGER)
     //private List<NinoEntity> niños;
-
     //RELACION ONETONE CON NINOENTITY 1 NIÑO Y 1 BAUTIZO
-    @OneToOne
-    @JoinColumn(name = "cedula_nino", referencedColumnName = "cedula", insertable = false, updatable = false)
-    private NinoEntity nino;
     
+
     public BautismoEntity() {
     }
 
@@ -39,6 +35,7 @@ public class BautismoEntity {
         this.matrimoniosPadres = matrimoniosPadres;
     }
 
+  
     public Integer getIdBautismo() {
         return idBautismo;
     }
@@ -71,7 +68,6 @@ public class BautismoEntity {
         this.matrimoniosPadres = matrimoniosPadres;
     }
 
-    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -81,8 +77,7 @@ public class BautismoEntity {
 
     @Override
     public boolean equals(Object object) {
-       
-        
+
         if (!(object instanceof BautismoEntity)) {
             return false;
         }
@@ -92,6 +87,10 @@ public class BautismoEntity {
         }
         return true;
     }
-  
-    
+
+    @Override
+    public String toString() {
+        return "{" + "fecha=" + fecha + ", descripcionPadrino=" + descripcionPadrino + ", matrimoniosPadres=" + matrimoniosPadres  + '}';
+    }
+
 }

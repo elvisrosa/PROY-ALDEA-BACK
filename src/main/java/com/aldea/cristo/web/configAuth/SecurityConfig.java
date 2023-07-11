@@ -35,14 +35,14 @@ public class SecurityConfig {
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authz)
                         -> authz
-                        //.requestMatchers(HttpMethod.GET, "/api/**").permitAll()"
-                        .requestMatchers(HttpMethod.GET, "/api/saludo/**").hasRole("CUSTOMER")
-                        .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").hasAnyRole("ADMIN", "CUSTOMER", "OTRO")
-                        .requestMatchers(HttpMethod.POST, "/api/**").hasRole("ADMIN")
-                        .requestMatchers("/api/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        //.requestMatchers("/api/niños/**").hasRole("ADMIN")
+                        .requestMatchers("/api/niños/**").permitAll()
+                        .requestMatchers("/api/**").permitAll()
+                        //.hasAnyRole("ADMIN", "CUSTOMER", "OTRO")
+                        .requestMatchers(HttpMethod.GET, "/api/saludo/**").hasRole("ADMIN")
                         .requestMatchers("/api/eliminar/**").hasRole("ADMIN")
-                        //.requestMatchers("/api/api2/randon").hasAuthority("randon_order")
+                        .requestMatchers("/api/api2/randon").hasAuthority("randon_order")
                         .anyRequest().authenticated()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
@@ -73,13 +73,13 @@ public class SecurityConfig {
     }
      */
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManeger(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
     }
 
     @Bean
-    public AuthenticationManager authenticationManeger(AuthenticationConfiguration configuration) throws Exception {
-        return configuration.getAuthenticationManager();
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
 }

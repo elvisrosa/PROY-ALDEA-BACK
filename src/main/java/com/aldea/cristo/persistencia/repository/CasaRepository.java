@@ -5,13 +5,13 @@
  */
 package com.aldea.cristo.persistencia.repository;
 
-import com.aldea.cristo.persistencia.entities.PadreEntity;
+import com.aldea.cristo.persistencia.entities.CasaEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author elvis
  */
-public interface DatosPadreRepository  extends CrudRepository<PadreEntity, String>{
+public interface CasaRepository extends CrudRepository<CasaEntity, Integer>{
     
 }

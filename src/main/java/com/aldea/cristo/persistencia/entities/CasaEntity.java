@@ -1,14 +1,14 @@
 package com.aldea.cristo.persistencia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
-//@Entity
-//@Table(name = "casa")
+@Entity
+@Table(name = "casa")
 public class CasaEntity {
     
-    @Id
-    
+    @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_casa", nullable = false)
     private Integer idCasa;
@@ -16,13 +16,13 @@ public class CasaEntity {
     @Column(name = "numero_casa")
     private String numeroCasa;
 
-    @Column(name = "telefono")
+    @Column(length = 10)
     private String telefono;
 
-    @Column(name = "direccion")
     private String direccion;
     
     @OneToMany(mappedBy = "casa", fetch = FetchType.EAGER)
+    @JsonIgnore
     private List<NinoEntity> niños;
 
 

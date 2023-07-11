@@ -1,15 +1,15 @@
 package com.aldea.cristo.servicios;
 
 import com.aldea.cristo.persistencia.entities.NinoEntity;
-import com.aldea.cristo.persistencia.interfaces.NinoInterface;
 import com.aldea.cristo.persistencia.repository.NinoRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
 
-@Service
-public class NinoService implements NinoInterface {
+@Service("servicioNino")
+public class NinoService implements InterfazGenerica<NinoEntity, String> {
 
     @Autowired
     private NinoRepository service;
@@ -17,7 +17,7 @@ public class NinoService implements NinoInterface {
     @Override
     @Transactional(readOnly = true)
     public List<NinoEntity> findAll() {
-        return (List<NinoEntity>) service.findAll();
+        return  (List<NinoEntity>) service.findAll();
     }
 
     @Override
@@ -37,14 +37,6 @@ public class NinoService implements NinoInterface {
     public NinoEntity save(NinoEntity e) {
         return service.save(e);
     }
-        /*NinoEntity niño;
-        if(e.getCedula()!=null){
-            niño = service.save(e);
-        }else{
-          niño = service.save(e);
-        }           
-        return niño;
-    }
-         */
+    
 
-    }
+}

@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -35,40 +36,44 @@ public class jwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        //BTENERMOS EL TOKEN DESDE LA CABEZERA DE LA PETICIÓN
-        String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer")) {
+        try {
+            //BTENERMOS EL TOKEN DESDE LA CABEZERA DE LA PETICIÓN
+            String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (authHeader == null || authHeader.isEmpty() || !authHeader.startsWith("Bearer")) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            //SEPARAMOS EL TOKEN DEL BEARER BEARE TOKEN
+            String jwt = authHeader.split(" ")[1].trim();
+
+            //VALIDAMOS SI EL TOKEN ES VALIDO       
+            if (!jwtUtil.isValid(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            //CARGAR USUARIO DESDE USERDETAILSERVICE
+            String username = jwtUtil.getUsername(jwt);
+            User user = (User) this.userDetailService.loadUserByUsername(username);
+
+            //CARGAR AL USUARIO EN EL CONTEXTO DE SEGURIDAD
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    user.getUsername(), user.getPassword(), user.getAuthorities()
+            );
+
+            //Agregar detalles a la authenticacion del usuario
+            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            System.out.println("Datos del authenticationToken" + authenticationToken);
             filterChain.doFilter(request, response);
-            return;
-        }
-        //SEPARAMOS EL TOKEN DEL BEARER BEARE TOKEN
-        String jwt = authHeader.split(" ")[1].trim();
 
-        //VALIDAMOS SI EL TOKEN ES VALIDO       
-        if (!jwtUtil.isValid(jwt)) {
-            filterChain.doFilter(request, response);
-            return;
+            //SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            //filterChain.doFilter(request, response);
+        } catch (ServletException | IOException | UsernameNotFoundException e) {
+            e.getStackTrace();
+            logger.error(e.getMessage());
         }
 
-        //CARGAR USUARIO DESDE USERDETAILSERVICE
-        String username = jwtUtil.getUsername(jwt);
-        User user = (User) this.userDetailService.loadUserByUsername(username);
-      
-
-        //CARGAR AL USUARIO EN EL CONTEXTO DE SEGURIDAD
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                user.getUsername(), user.getPassword(), user.getAuthorities()
-        );
-
-        //Agregar detalles a la authenticacion del usuario
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        System.out.println("Datos del authenticationToken" + authenticationToken);
-        logger.info("Datos del authenticationToken " + authenticationToken);
-        filterChain.doFilter(request, response);
-
-        //SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-        //filterChain.doFilter(request, response);
     }
 
 }

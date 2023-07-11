@@ -11,9 +11,9 @@ public class UserEntity {
     @Column(nullable = false, length = 20)
     private String username;
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
-    private Integer idUsuario;
+    /*@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_usuario", nullable = false)
+    private Integer idUsuario;*/
 
     private String nombre;
 
@@ -88,13 +88,7 @@ public class UserEntity {
         this.correo = correo;
     }
 
-    public Integer getIdUsuario() {
-        return idUsuario;
-    }
-
-    public void setIdUsuario(Integer idUsuario) {
-        this.idUsuario = idUsuario;
-    }
+ 
     
     
 

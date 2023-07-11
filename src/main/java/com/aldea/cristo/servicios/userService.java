@@ -14,7 +14,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Role;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,35 +35,7 @@ public class userService implements UserDetailsService {
     public userService(userRepository userRepository) {
         this.userRepository = userRepository;
     }
-
-    /*public ResponseUsuario MostrarDatosUsuario(String username) {
-        UserEntity userEntity = userRepository.findById(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
-
-        // Construir el objeto UserResponse con los datos necesarios
-        ResponseUsuario userResponse = new ResponseUsuario();
-        userResponse.setUsername(userEntity.getUsername());
-        userResponse.setNombre(userEntity.getNombre());
-        userResponse.setCorreo(userEntity.getCorreo());
-
-        // Construir el objeto UserDetails para la autenticación
-        String[] roles = userEntity.getRoles().stream()
-                .map(UserRolEntity::getRole)
-                .toArray(String[]::new);
-        
-        userResponse.setRoles(roles);
-
-        UserDetails userDetails = User.builder()
-                .username(userEntity.getUsername())
-                .password(userEntity.getPassword())
-                .roles(roles)
-                .accountLocked(userEntity.getLocked())
-                .disabled(userEntity.getDisabled())
-                .build();
-        
-
-        return userResponse;
-    }*/
+   
     public ResponseUsuario MostrarDatosUsuario(String username) {
         UserEntity userEntity = userRepository.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
@@ -102,6 +73,63 @@ public class userService implements UserDetailsService {
                 .disabled(userEntity.getDisabled())
                 .build();
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     /*private String[] getAuthorities(String role){
         if("ADMIN".equals(role) || "CUSTOMER".equals(role)){
@@ -121,3 +149,33 @@ public class userService implements UserDetailsService {
     }
      */
 }
+
+
+/*public ResponseUsuario MostrarDatosUsuario(String username) {
+        UserEntity userEntity = userRepository.findById(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
+
+        // Construir el objeto UserResponse con los datos necesarios
+        ResponseUsuario userResponse = new ResponseUsuario();
+        userResponse.setUsername(userEntity.getUsername());
+        userResponse.setNombre(userEntity.getNombre());
+        userResponse.setCorreo(userEntity.getCorreo());
+
+        // Construir el objeto UserDetails para la autenticación
+        String[] roles = userEntity.getRoles().stream()
+                .map(UserRolEntity::getRole)
+                .toArray(String[]::new);
+        
+        userResponse.setRoles(roles);
+
+        UserDetails userDetails = User.builder()
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .roles(roles)
+                .accountLocked(userEntity.getLocked())
+                .disabled(userEntity.getDisabled())
+                .build();
+        
+
+        return userResponse;
+    }*/

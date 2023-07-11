@@ -1,15 +1,13 @@
 package com.aldea.cristo.persistencia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Entity
 @Table(name = "datos_padre")
 public class PadreEntity {
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_padre", nullable = false)
-    private Integer idPadre;
 
     @Id
     private String cedula;
@@ -25,13 +23,16 @@ public class PadreEntity {
 
     private String telefono;
 
-    //@OneToMany(mappedBy = "datos_padre", fetch = FetchType.EAGER)
-    //private List<NinoEntity> niños;
+    //MUCHOS  NIÑOS - 1 PADRE
+    @OneToMany(mappedBy = "padre", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<NinoEntity> niños;
+    
+    
     public PadreEntity() {
     }
 
-    public PadreEntity(Integer idPadre, String cedula, String nombre, String apellidos, Timestamp fechaNacimiento, Integer edad, String telefono) {
-        this.idPadre = idPadre;
+    public PadreEntity(String cedula, String nombre, String apellidos, Timestamp fechaNacimiento, Integer edad, String telefono) {
         this.cedula = cedula;
         this.nombre = nombre;
         this.apellidos = apellidos;
@@ -40,14 +41,7 @@ public class PadreEntity {
         this.telefono = telefono;
     }
 
-    public Integer getIdPadre() {
-        return idPadre;
-    }
-
-    public void setIdPadre(Integer idPadre) {
-        this.idPadre = idPadre;
-    }
-
+ 
     public String getCedula() {
         return cedula;
     }
@@ -96,23 +90,14 @@ public class PadreEntity {
         this.telefono = telefono;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idPadre != null ? idPadre.hashCode() : 0);
-        return hash;
+    public List<NinoEntity> getNiños() {
+        return niños;
     }
 
-    @Override
-    public boolean equals(Object object) {
-
-        if (!(object instanceof PadreEntity)) {
-            return false;
-        }
-        PadreEntity other = (PadreEntity) object;
-        if ((this.idPadre == null && other.idPadre != null) || (this.idPadre != null && !this.idPadre.equals(other.idPadre))) {
-            return false;
-        }
-        return true;
+    public void setNiños(List<NinoEntity> niños) {
+        this.niños = niños;
     }
+    
+    
+
 }

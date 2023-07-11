@@ -7,9 +7,6 @@ import java.sql.Timestamp;
 @Table(name = "nino")
 public class NinoEntity {
 
-    /*@GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_nino")
-    private Integer idNino;*/
     @Id
     @Column(name = "cedula", nullable = false, length = 10)
     private String cedula;
@@ -35,55 +32,42 @@ public class NinoEntity {
 
     @Column(nullable = false)
     private String sexo;
+    
+    private Boolean ausente;
 
     //RELACION ONETOONE CON BAUTIZO
-    @OneToOne(mappedBy = "nino")
+    //@JsonIgnore
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_bautismo")
     private BautismoEntity bautizo;
-
-    /*@ManyToOne
+    
+    //RELACION CON CASA 1 CASA VAROS NIÑOS
+    @ManyToOne()
+    @JoinColumn(name = "id_casa")
+    private CasaEntity casa;
+    
+    //RELACION CON PADRE MANYTOONE
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_padre")
     private PadreEntity padre;
 
-    @ManyToOne
-    @JoinColumn(name = "id_madre")
-    private MadreEntity madre;
-
-    @ManyToOne
-    @JoinColumn(name = "id")
-    private UserEntity users;
-
-    @ManyToOne
-    @JoinColumn(name = "id_casa")
-    private CasaEntity casa;
-
-    @ManyToOne
-    @JoinColumn(name = "id_bautismo")
-    private BautismoEntity bautismo;
-
-    @ManyToOne
-    @JoinColumn(name = "id_grupo")
-    private GrupoEntity grupo;
-    
-    @OneToMany(mappedBy = "nino", fetch = FetchType.EAGER)
-    private List<FichaMedicaEntity> fichasMedicas;
-
-    @OneToMany(mappedBy = "nino", fetch = FetchType.EAGER)
-    private List<BitacoraEntity> bitacoras;
-
-    @OneToMany(mappedBy = "nino", fetch = FetchType.EAGER)
-    private List<EstudiosEntity> estudios;
-     */
     public NinoEntity() {
     }
 
-    public NinoEntity(String cedula, String nombres, String apellidos, Timestamp fechaNacimiento, String lugarNacimiento, Integer edad, String sexo) {
-        this.cedula = cedula;
-        this.nombres = nombres;
-        this.apellidos = apellidos;
-        this.fechaNacimiento = fechaNacimiento;
-        this.lugarNacimiento = lugarNacimiento;
-        this.edad = edad;
-        this.sexo = sexo;
+    public PadreEntity getPadre() {
+        return padre;
+    }
+
+    public void setPadre(PadreEntity padre) {
+        this.padre = padre;
+    }
+    
+    public BautismoEntity getBautizo() {
+        return bautizo;
+    }
+
+    public void setBautizo(BautismoEntity bautizo) {
+        this.bautizo = bautizo;
     }
 
     public String getCedula() {
@@ -142,9 +126,29 @@ public class NinoEntity {
         this.sexo = sexo;
     }
 
+    public CasaEntity getCasa() {
+        return casa;
+    }
+
+    public void setCasa(CasaEntity casa) {
+        this.casa = casa;
+    }
+
+    public Boolean getAusente() {
+        return ausente;
+    }
+
+    public void setAusente(Boolean ausente) {
+        this.ausente = ausente;
+    }
+
     @Override
     public String toString() {
-        return "NinoEntity{" + " cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento=" + fechaNacimiento + ", lugarNacimiento=" + lugarNacimiento + ", edad=" + edad + ", sexo=" + sexo + ", bautizo=" + bautizo + '}';
+        return "NinoEntity{" + "cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento=" + fechaNacimiento + ", lugarNacimiento=" + lugarNacimiento + ", edad=" + edad + ", sexo=" + sexo + ", estado=" + ausente + ", bautizo=" + bautizo + ", casa=" + casa + ", padre=" + padre + '}';
     }
+
+    
+
+    
 
 }

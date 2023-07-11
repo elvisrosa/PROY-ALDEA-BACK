@@ -15,10 +15,8 @@ import java.sql.Timestamp;
 @Table(name = "user_role")
 @IdClass(UserRoleId.class)
 public class UserRolEntity {
-    
-    
-    
-     @Id
+     
+    @Id
     @Column(nullable = false, length = 20)
     private String username;
 

@@ -1,6 +1,4 @@
 package com.aldea.cristo.web.controllers;
-
-import com.aldea.cristo.persistencia.entities.UserEntity;
 import com.aldea.cristo.servicios.dtos.LoginDto;
 import com.aldea.cristo.servicios.dtos.ResponseUsuario;
 import com.aldea.cristo.servicios.userService;
@@ -50,6 +48,7 @@ public class authController {
         try {
             UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
             Authentication authentication = this.authenticationManager.authenticate(login);
+            logger.info("authentication" + authentication);
 
             //OBTENEMOS LOS DATOS DEL USUARIO AUTENTICADO
             ResponseUsuario user = userService.MostrarDatosUsuario(loginDto.getUsername());
@@ -59,16 +58,17 @@ public class authController {
             responseDTO.setNombre(user.getNombre());
             responseDTO.setCorreo(user.getCorreo());
             responseDTO.setRoles(user.getRoles());
+            String jwt = this.jwtUtil.create(loginDto.getUsername());
+            mensaje.put("usuario", responseDTO);
+            mensaje.put("estado", true);
+            mensaje.put("token", jwt);
+            //mensaje.put("Usuario", userService.MostrarDatosUsuario(jwtUtil.getUsername(jwt)));
+            logger.info("Usuario" + jwtUtil.getUsername(jwt));
 
         } catch (AuthenticationException e) {
+            e.getStackTrace();
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        String jwt = this.jwtUtil.create(loginDto.getUsername());
-        mensaje.put("Usuario", responseDTO);
-        mensaje.put("Estado", true);
-        mensaje.put("token", jwt);
-        //mensaje.put("Usuario", userService.MostrarDatosUsuario(jwtUtil.getUsername(jwt)));
-        logger.info("Usuario" + jwtUtil.getUsername(jwt));
         return ResponseEntity.ok(mensaje);
 
     }
