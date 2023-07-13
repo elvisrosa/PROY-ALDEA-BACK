@@ -7,17 +7,23 @@ package com.aldea.cristo.persistencia.entities;
 
 import java.io.Serializable;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  *
  * @author elvis
  */
+@Getter
+@Setter 
+@NoArgsConstructor
 public class UserRoleId implements Serializable {
        
     private String username;
     private String role;
 
-    @Override
+    /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof UserRoleId that)) return false;
@@ -29,6 +35,37 @@ public class UserRoleId implements Serializable {
         return Objects.hash(username, role);
     }
 
+*/
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 41 * hash + Objects.hashCode(this.username);
+        hash = 41 * hash + Objects.hashCode(this.role);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final UserRoleId other = (UserRoleId) obj;
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        return Objects.equals(this.role, other.role);
+    }
+
+   
+    
+    
     
 
     

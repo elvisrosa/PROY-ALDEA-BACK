@@ -72,9 +72,6 @@ public class authController {
         return ResponseEntity.ok(mensaje);
 
     }
-
-    @GetMapping("/saludo/hola")
-    public ResponseEntity<?> getHOlaElvis() {
-        return ResponseEntity.ok("HOla elvic como estas");
-    }
 }
+
+    

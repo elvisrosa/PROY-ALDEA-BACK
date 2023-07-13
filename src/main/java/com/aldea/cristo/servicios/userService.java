@@ -1,12 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.aldea.cristo.servicios;
-
 import com.aldea.cristo.persistencia.entities.UserEntity;
 import com.aldea.cristo.persistencia.entities.UserRolEntity;
+import com.aldea.cristo.persistencia.repository.UserRolRepository;
 import com.aldea.cristo.persistencia.repository.userRepository;
 import com.aldea.cristo.servicios.dtos.ResponseUsuario;
 import java.util.ArrayList;
@@ -18,22 +13,25 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- *
- * @author elvis
- */
+
 @Service
 public class userService implements UserDetailsService {
 
     UserEntity usuario = new UserEntity();
     private static final Logger logger = LoggerFactory.getLogger(userService.class);
     private final userRepository userRepository;
+    private final UserRolRepository userRolRepository;
+    private String password;
 
     @Autowired
-    public userService(userRepository userRepository) {
+    public userService(userRepository userRepository, UserRolRepository userRolRepository) {
         this.userRepository = userRepository;
+        this.userRolRepository=userRolRepository;
     }
    
     public ResponseUsuario MostrarDatosUsuario(String username) {
@@ -73,6 +71,36 @@ public class userService implements UserDetailsService {
                 .disabled(userEntity.getDisabled())
                 .build();
     }
+    
+    public void deleteById(String username){
+        userRepository.deleteById(username);
+    }
+    
+    public UserEntity findById(String username){
+        return userRepository.findById(username).orElse(null);
+    }
+    
+    @Transactional
+    public void save(UserEntity user, List<UserRolEntity> roles){   
+        this.userRepository.save(user);
+        roles.stream().map(role -> {
+            role.setUser(user);
+            return role;
+        }).forEachOrdered(role -> {
+            userRolRepository.save(role);
+        });
+    }
+       
+    public List<UserEntity> findAll(){
+        return (List<UserEntity>) userRepository.findAll();
+    }
+    
+     public String encryptar(String password) {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        logger.info("PAsswordEncryptada: " +encoder.encode(password));
+        return encoder.encode(password);
+    }
+}
     
     
     
@@ -148,7 +176,6 @@ public class userService implements UserDetailsService {
         return authorities;
     }
      */
-}
 
 
 /*public ResponseUsuario MostrarDatosUsuario(String username) {

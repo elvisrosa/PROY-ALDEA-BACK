@@ -2,7 +2,9 @@ package com.aldea.cristo.web.controllers;
 
 import com.aldea.cristo.persistencia.entities.CasaEntity;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -32,7 +34,7 @@ public class CasaController {
 
     @GetMapping("/ver/{idcasa}")
     public CasaEntity listarTodo(@PathVariable Integer idcasa) {
-        return  (CasaEntity) servicioCasa.findBId(idcasa);
+        return (CasaEntity) servicioCasa.findBId(idcasa);
     }
 
     @PostMapping("/crear")
@@ -66,7 +68,18 @@ public class CasaController {
     }
 
     @DeleteMapping("/eliminar/{id}")
-    public void eliminar(@PathVariable Integer id) {
-        servicioCasa.delete(id);
+    public ResponseEntity<?> eliminar(@PathVariable Integer id) {
+        Map<String, Object> mensaje = new HashMap<>();
+        try {
+            servicioCasa.delete(id);
+            mensaje.put("respuesta", "Casa eliminada");
+
+        } catch (Exception e) {
+            mensaje.put("respuesta", "Error al eliminar, verifica que la casa a eliminar no tenga alumnos aún en ella");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mensaje);
+            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+        return ResponseEntity.ok(mensaje);
+
     }
 }

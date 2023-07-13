@@ -1,7 +1,12 @@
 package com.aldea.cristo.persistencia.entities;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import lombok.*;
 
+
+
+@Getter
+@Setter
 @Entity
 @Table(name = "bautismo")
 public class BautismoEntity {
@@ -35,38 +40,6 @@ public class BautismoEntity {
         this.matrimoniosPadres = matrimoniosPadres;
     }
 
-  
-    public Integer getIdBautismo() {
-        return idBautismo;
-    }
-
-    public void setIdBautismo(Integer idBautismo) {
-        this.idBautismo = idBautismo;
-    }
-
-    public Timestamp getFecha() {
-        return fecha;
-    }
-
-    public void setFecha(Timestamp fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getDescripcionPadrino() {
-        return descripcionPadrino;
-    }
-
-    public void setDescripcionPadrino(String descripcionPadrino) {
-        this.descripcionPadrino = descripcionPadrino;
-    }
-
-    public String getMatrimoniosPadres() {
-        return matrimoniosPadres;
-    }
-
-    public void setMatrimoniosPadres(String matrimoniosPadres) {
-        this.matrimoniosPadres = matrimoniosPadres;
-    }
 
     @Override
     public int hashCode() {
@@ -92,5 +65,6 @@ public class BautismoEntity {
     public String toString() {
         return "{" + "fecha=" + fecha + ", descripcionPadrino=" + descripcionPadrino + ", matrimoniosPadres=" + matrimoniosPadres  + '}';
     }
+
 
 }

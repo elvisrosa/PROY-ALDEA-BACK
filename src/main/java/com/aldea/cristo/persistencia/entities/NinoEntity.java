@@ -2,7 +2,12 @@ package com.aldea.cristo.persistencia.entities;
 
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import lombok.*;
 
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "nino")
 public class NinoEntity {
@@ -51,96 +56,6 @@ public class NinoEntity {
     @JoinColumn(name = "id_padre")
     private PadreEntity padre;
 
-    public NinoEntity() {
-    }
-
-    public PadreEntity getPadre() {
-        return padre;
-    }
-
-    public void setPadre(PadreEntity padre) {
-        this.padre = padre;
-    }
-    
-    public BautismoEntity getBautizo() {
-        return bautizo;
-    }
-
-    public void setBautizo(BautismoEntity bautizo) {
-        this.bautizo = bautizo;
-    }
-
-    public String getCedula() {
-        return cedula;
-    }
-
-    public void setCedula(String cedula) {
-        this.cedula = cedula;
-    }
-
-    public String getNombres() {
-        return nombres;
-    }
-
-    public void setNombres(String nombres) {
-        this.nombres = nombres;
-    }
-
-    public String getApellidos() {
-        return apellidos;
-    }
-
-    public void setApellidos(String apellidos) {
-        this.apellidos = apellidos;
-    }
-
-    public Timestamp getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-    public void setFechaNacimiento(Timestamp fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-    public String getLugarNacimiento() {
-        return lugarNacimiento;
-    }
-
-    public void setLugarNacimiento(String lugarNacimiento) {
-        this.lugarNacimiento = lugarNacimiento;
-    }
-
-    public Integer getEdad() {
-        return edad;
-    }
-
-    public void setEdad(Integer edad) {
-        this.edad = edad;
-    }
-
-    public String getSexo() {
-        return sexo;
-    }
-
-    public void setSexo(String sexo) {
-        this.sexo = sexo;
-    }
-
-    public CasaEntity getCasa() {
-        return casa;
-    }
-
-    public void setCasa(CasaEntity casa) {
-        this.casa = casa;
-    }
-
-    public Boolean getAusente() {
-        return ausente;
-    }
-
-    public void setAusente(Boolean ausente) {
-        this.ausente = ausente;
-    }
 
     @Override
     public String toString() {

@@ -77,10 +77,13 @@ public class NinoControlller {
             }
 
             //CASA
-            if (datos.getCasa()!=null) {
+            if (datos.getCasa().getIdCasa() != null) {
                 CasaEntity casa = (CasaEntity) servicioCasa.findBId(datos.getCasa().getIdCasa());
                 nino.setCasa(casa);
             }
+
+            //PADRE
+            //MADRE
             //REGISTRANDO TODOS LOS DATOS
             servicioNino.save(nino);
 

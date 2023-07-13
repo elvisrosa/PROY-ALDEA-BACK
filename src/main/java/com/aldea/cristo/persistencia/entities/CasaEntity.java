@@ -3,7 +3,13 @@ package com.aldea.cristo.persistencia.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "casa")
 public class CasaEntity {
@@ -24,77 +30,4 @@ public class CasaEntity {
     @OneToMany(mappedBy = "casa", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<NinoEntity> niños;
-
-
-    public CasaEntity() {
-    }
-    
-    public CasaEntity(Integer idCasa, String numeroCasa, String telefono, String direccion) {
-        this.idCasa = idCasa;
-        this.numeroCasa = numeroCasa;
-        this.telefono = telefono;
-        this.direccion = direccion;
-    }
-
-    public Integer getIdCasa() {
-        return idCasa;
-    }
-
-    public void setIdCasa(Integer idCasa) {
-        this.idCasa = idCasa;
-    }
-
-    public String getNumeroCasa() {
-        return numeroCasa;
-    }
-
-    public void setNumeroCasa(String numeroCasa) {
-        this.numeroCasa = numeroCasa;
-    }
-
-    public String getTelefono() {
-        return telefono;
-    }
-
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-
-    public String getDireccion() {
-        return direccion;
-    }
-
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
-    }
-   
-     public List<NinoEntity> getNiños() {
-        return niños;
-    }
-
-    public void setNiños(List<NinoEntity> niños) {
-        this.niños = niños;
-    }
-    
-     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idCasa != null ? idCasa.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        
-        if (!(object instanceof CasaEntity)) {
-            return false;
-        }
-        CasaEntity other = (CasaEntity) object;
-        if ((this.idCasa == null && other.idCasa != null) || (this.idCasa != null && !this.idCasa.equals(other.idCasa))) {
-            return false;
-        }
-        return true;
-    }
-
-    
 }
