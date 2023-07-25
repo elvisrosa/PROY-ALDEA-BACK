@@ -4,9 +4,8 @@ import jakarta.persistence.*;
 import java.sql.Timestamp;
 import lombok.*;
 
-
-@Getter
 @Setter
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "nino")
@@ -55,12 +54,25 @@ public class NinoEntity {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_padre")
     private PadreEntity padre;
-
+    
+    
+    //RELACION CON MADRE MANYTOONE
+    @ManyToOne(cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "id_madre")
+    private MadreEntity madre;
 
     @Override
     public String toString() {
-        return "NinoEntity{" + "cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento=" + fechaNacimiento + ", lugarNacimiento=" + lugarNacimiento + ", edad=" + edad + ", sexo=" + sexo + ", estado=" + ausente + ", bautizo=" + bautizo + ", casa=" + casa + ", padre=" + padre + '}';
+        return "NinoEntity{" + "cedula=" + cedula + ", nombres=" + nombres + ", apellidos=" + apellidos + ", fechaNacimiento=" + fechaNacimiento + ", lugarNacimiento=" + lugarNacimiento + ", edad=" + edad + ", sexo=" + sexo + ", ausente=" + ausente + ", bautizo=" + bautizo + ", casa=" + casa + ", padre=" + padre + ", madre=" + madre + '}';
     }
+
+    
+    
+    
+   
+    
+    
+    
 
     
 

@@ -7,6 +7,7 @@ import lombok.*;
 
 @Getter
 @Setter
+@NoArgsConstructor  
 @Entity
 @Table(name = "bautismo")
 public class BautismoEntity {
@@ -29,16 +30,6 @@ public class BautismoEntity {
     //private List<NinoEntity> niños;
     //RELACION ONETONE CON NINOENTITY 1 NIÑO Y 1 BAUTIZO
     
-
-    public BautismoEntity() {
-    }
-
-    public BautismoEntity(Integer idBautismo, Timestamp fecha, String descripcionPadrino, String matrimoniosPadres) {
-        this.idBautismo = idBautismo;
-        this.fecha = fecha;
-        this.descripcionPadrino = descripcionPadrino;
-        this.matrimoniosPadres = matrimoniosPadres;
-    }
 
 
     @Override

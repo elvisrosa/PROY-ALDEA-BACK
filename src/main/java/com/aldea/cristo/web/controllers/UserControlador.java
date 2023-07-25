@@ -1,7 +1,10 @@
 package com.aldea.cristo.web.controllers;
+
 import com.aldea.cristo.persistencia.entities.UserEntity;
 import com.aldea.cristo.persistencia.entities.UserRolEntity;
+import com.aldea.cristo.persistencia.entities.UserRoleId;
 import com.aldea.cristo.servicios.userService;
+import jakarta.persistence.IdClass;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -41,48 +44,47 @@ public class UserControlador {
             usere.setNombre(user.getNombre());
             usere.setPassword(userService.encryptar(user.getPassword()));
             userService.save(usere, roles);
+            return ResponseEntity.ok("Usuario creado correctamente");
 
         } catch (Exception e) {
             e.getStackTrace();
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-        return ResponseEntity.ok("Usuario creado correctamente");
     }
 
+    //YA NO ES NCESARUO - CON EL METODO POST PODEMOS TANTO CREAR COMO ACTUALIZAR
     @PutMapping("/actualizar/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> actualizar(@RequestBody UserEntity user, @PathVariable String username) {
+    public ResponseEntity<?> actualizar(@PathVariable String username, @RequestBody UserEntity user) {
         UserEntity userE = userService.findById(username);
-        logger.info("UserE"+ userE);
+        logger.info("UserE" + userE);
         if (null == userE) {
             return ResponseEntity.notFound().build();
         }
         try {
+            //userE.setUsername(user.getUsername());
             userE.setDisabled(user.getDisabled());
             userE.setLocked(user.getLocked());
             userE.setNombre(user.getNombre());
-            userE.setRoles(user.getRoles());
             userE.setCorreo(user.getCorreo());
-            //userE.setPassword(user.getPassword());
+            userE.setPassword(userService.encryptar(user.getPassword()));
             List<UserRolEntity> roles = mapToUserRoleEntities(user);
             userService.save(userE, roles);
-            return ResponseEntity.ok("Usuario actualizado correctamente");
         } catch (Exception e) {
             e.getStackTrace();
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+        return ResponseEntity.ok("Usuario actualizado correctamente");
     }
 
     private List<UserRolEntity> mapToUserRoleEntities(UserEntity userRequest) {
-        logger.info(userRequest.getUsername());
         return userRequest.getRoles().stream()
                 .map(roleRequest -> {
                     UserRolEntity roleEntity = new UserRolEntity();
                     roleEntity.setUsername(userRequest.getUsername());
                     roleEntity.setRole(roleRequest.getRole());
-                    logger.info(roleEntity.toString());
                     return roleEntity;
                 }).collect(Collectors.toList());
     }

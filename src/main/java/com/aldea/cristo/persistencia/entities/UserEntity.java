@@ -34,7 +34,7 @@ public class UserEntity {
     
     private String correo;
     
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserRolEntity> roles;
       
 

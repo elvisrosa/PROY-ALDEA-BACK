@@ -2,7 +2,9 @@ package com.aldea.cristo.web.controllers;
 
 import com.aldea.cristo.persistencia.entities.BautismoEntity;
 import com.aldea.cristo.persistencia.entities.CasaEntity;
+import com.aldea.cristo.persistencia.entities.MadreEntity;
 import com.aldea.cristo.persistencia.entities.NinoEntity;
+import com.aldea.cristo.persistencia.entities.PadreEntity;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api")
@@ -30,7 +33,6 @@ public class NinoControlller {
     @Autowired
     @Qualifier("servicioNino")
     private InterfazGenerica servicioNino;
-    //private NinoInterface servicioNino;
 
     @Autowired
     @Qualifier("servicioBautizo")
@@ -40,7 +42,16 @@ public class NinoControlller {
     @Qualifier("servicioCasa")
     private InterfazGenerica servicioCasa;
 
-    //private Bautizonterface servicioBautizo;
+    @Autowired
+    @Qualifier("servicioPadre")
+    private InterfazGenerica servicioPadre;
+
+    @Autowired
+    @Qualifier("servicioMadre")
+    private InterfazGenerica servicioMadre;
+
+    
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/niños")
     public List<NinoEntity> listarNiños() {
         return servicioNino.findAll();
@@ -54,6 +65,9 @@ public class NinoControlller {
     @PostMapping("/niños/crear")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<NinoEntity> crear(@RequestBody NinoEntity datos) {
+
+        System.out.println("Datos: " + datos);
+        System.out.println("Madre: " + datos.getMadre());
 
         try {
             //NIÑO
@@ -77,18 +91,40 @@ public class NinoControlller {
             }
 
             //CASA
-            if (datos.getCasa().getIdCasa() != null) {
+            if (datos.getCasa().getIdCasa() > 0) {
                 CasaEntity casa = (CasaEntity) servicioCasa.findBId(datos.getCasa().getIdCasa());
                 nino.setCasa(casa);
             }
 
             //PADRE
+            if (datos.getPadre() != null) {
+                PadreEntity padre = new PadreEntity();
+                padre.setCedula(datos.getPadre().getCedula());
+                padre.setApellidos(datos.getPadre().getApellidos());
+                padre.setEdad(datos.getPadre().getEdad());
+                padre.setTelefono(datos.getPadre().getTelefono());
+                padre.setFechaNacimiento(datos.getPadre().getFechaNacimiento());
+                padre.setNombre(datos.getPadre().getNombre());
+                nino.setPadre(padre);
+                servicioPadre.save(padre);
+            }
             //MADRE
+            if (datos.getMadre() != null) {
+                MadreEntity madre = new MadreEntity();
+                madre.setCedula(datos.getMadre().getCedula());
+                madre.setApellidos(datos.getMadre().getApellidos());
+                madre.setEdad(datos.getMadre().getEdad());
+                madre.setTelefono(datos.getMadre().getTelefono());
+                madre.setFechaNacimiento(datos.getMadre().getFechaNacimiento());
+                madre.setNombre(datos.getMadre().getNombre());
+                nino.setMadre(madre);
+                servicioMadre.save(madre);
+            }
             //REGISTRANDO TODOS LOS DATOS
             servicioNino.save(nino);
-
             return ResponseEntity.ok(nino);
         } catch (Exception e) {
+            logger.error("dATOS DEL NIÑO ACTUAL" + datos.getCasa().getIdCasa());
             e.getStackTrace();
             logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -99,7 +135,12 @@ public class NinoControlller {
     @DeleteMapping("/eliminar/{cedula}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable String cedula) {
-        servicioNino.delete(cedula);
+        try {
+            servicioNino.delete(cedula);
+        } catch (Exception e) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erorr al eliminar el usuario, intentalo nuevamente");
+        }
+            ResponseEntity.ok("Eliminado");
     }
 
     @PutMapping("/niños/{cedula}")

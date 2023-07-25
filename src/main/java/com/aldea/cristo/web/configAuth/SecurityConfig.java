@@ -36,9 +36,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authz)
                         -> authz
                         .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/index.html", "/v2/api-docs", "/swagger-resources/**", "/webjars/**").permitAll()
                         .requestMatchers("/api/niños/**").hasAnyRole("ADMIN", "TUTOR", "ADMINT")
                         .requestMatchers("/api/eliminar/**").hasAnyRole("ADMIN", "ADMINT")
                         .requestMatchers("/api/user/**").hasRole("ADMINT")
+                        .requestMatchers("/api/casa/**").permitAll()
+                        .requestMatchers("/cargar/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/user/actualizar/**").hasRole("ADMINT")
                         //.requestMatchers("/api/api2/randon").hasAuthority("randon_order")
                         .anyRequest().authenticated()

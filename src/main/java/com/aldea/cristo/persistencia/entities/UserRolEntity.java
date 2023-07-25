@@ -17,7 +17,7 @@ import lombok.Setter;
  * @author elvis
  */
 @Getter
-@Setter 
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "user_role")
@@ -43,6 +43,11 @@ public class UserRolEntity {
 
     @PrePersist
     protected void onCreate() {
+        grantedDate = new Timestamp(System.currentTimeMillis());
+    }
+
+    @PostUpdate
+    protected void onUpdate() {
         grantedDate = new Timestamp(System.currentTimeMillis());
     }
 

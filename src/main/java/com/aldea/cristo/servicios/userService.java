@@ -1,11 +1,14 @@
 package com.aldea.cristo.servicios;
+
 import com.aldea.cristo.persistencia.entities.UserEntity;
 import com.aldea.cristo.persistencia.entities.UserRolEntity;
+import com.aldea.cristo.persistencia.entities.UserRoleId;
 import com.aldea.cristo.persistencia.repository.UserRolRepository;
 import com.aldea.cristo.persistencia.repository.userRepository;
 import com.aldea.cristo.servicios.dtos.ResponseUsuario;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 public class userService implements UserDetailsService {
@@ -31,9 +33,9 @@ public class userService implements UserDetailsService {
     @Autowired
     public userService(userRepository userRepository, UserRolRepository userRolRepository) {
         this.userRepository = userRepository;
-        this.userRolRepository=userRolRepository;
+        this.userRolRepository = userRolRepository;
     }
-   
+
     public ResponseUsuario MostrarDatosUsuario(String username) {
         UserEntity userEntity = userRepository.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
@@ -71,95 +73,53 @@ public class userService implements UserDetailsService {
                 .disabled(userEntity.getDisabled())
                 .build();
     }
-    
-    public void deleteById(String username){
+
+    public void deleteById(String username) {
         userRepository.deleteById(username);
     }
-    
-    public UserEntity findById(String username){
+
+    public UserEntity findById(String username) {
         return userRepository.findById(username).orElse(null);
     }
-    
+
+    //REVISA QUE ESTO QUEDO PENDIENTE -- ESTA DE PUTA MADRE ESTO
     @Transactional
-    public void save(UserEntity user, List<UserRolEntity> roles){   
-        this.userRepository.save(user);
+    public void save(UserEntity user, List<UserRolEntity> roles) {
+        List<UserRolEntity> rol = userRolRepository.findByUsername(user.getUsername());
+        if (rol.size() > 0) {
+            rol.forEach(id -> {
+                logger.info("Roles" + id.getRole() + "Username" + id.getUsername());
+                //UserRoleId userEd = new UserRoleId();
+               // userEd.setUsername(id.getUsername());
+                //userEd.setRole(id.getRole());
+                userRolRepository.deleteByUsername(id.getUsername());
+            });
+        }
+
+        userRepository.save(user);
+
         roles.stream().map(role -> {
+            //role.setUsername(user.getUsername());
             role.setUser(user);
             return role;
         }).forEachOrdered(role -> {
             userRolRepository.save(role);
         });
+
     }
-       
-    public List<UserEntity> findAll(){
+
+    public List<UserEntity> findAll() {
         return (List<UserEntity>) userRepository.findAll();
     }
-    
-     public String encryptar(String password) {
+
+    public String encryptar(String password) {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        logger.info("PAsswordEncryptada: " +encoder.encode(password));
+        logger.info("PAsswordEncryptada: " + encoder.encode(password));
         return encoder.encode(password);
     }
 }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
-    /*private String[] getAuthorities(String role){
+/*private String[] getAuthorities(String role){
         if("ADMIN".equals(role) || "CUSTOMER".equals(role)){
             return new String[] {"randon_order"};
         }
@@ -175,10 +135,8 @@ public class userService implements UserDetailsService {
         }
         return authorities;
     }
-     */
-
-
-/*public ResponseUsuario MostrarDatosUsuario(String username) {
+ */
+ /*public ResponseUsuario MostrarDatosUsuario(String username) {
         UserEntity userEntity = userRepository.findById(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User " + username + " not found"));
 
