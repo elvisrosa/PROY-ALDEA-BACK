@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.aldea.cristo</groupId>
     <artifactId>aldeaCristoRey</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>aldeaCristoRey</name>
     <description>Proyecto para aldea cristo rey-proy de vinculación</description>
     <properties>
@@ -110,10 +110,7 @@
             <version>3.0.0</version>
         </dependency>
         
-        
-
-        
-     
+ 
 
     </dependencies>
 

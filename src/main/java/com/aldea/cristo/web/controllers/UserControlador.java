@@ -1,8 +1,10 @@
 package com.aldea.cristo.web.controllers;
 
+import com.aldea.cristo.persistencia.entities.TutoraEntity;
 import com.aldea.cristo.persistencia.entities.UserEntity;
 import com.aldea.cristo.persistencia.entities.UserRolEntity;
 import com.aldea.cristo.persistencia.entities.UserRoleId;
+import com.aldea.cristo.servicios.TutorService;
 import com.aldea.cristo.servicios.userService;
 import jakarta.persistence.IdClass;
 import java.util.List;
@@ -31,17 +33,33 @@ public class UserControlador {
     @Autowired
     private userService userService;
 
+    @Autowired
+    //@Qualifier("servicioTutor")
+    private TutorService servicioTutor;
+
     @PostMapping("/crear")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> save(@RequestBody UserEntity user) {
-        UserEntity usere = new UserEntity();
         List<UserRolEntity> roles = mapToUserRoleEntities(user);
+        boolean existeRolTutor = roles.stream().anyMatch(resp -> "TUTOR".equals(resp.getRole()));
+        /*roles.forEach(resp -> {
+            if ("TUTOR".equals(resp.getRole())) {
+                existeRolTutor = true;
+            }
+        });*/
         try {
+            TutoraEntity tutorCreado = null;
+            if (existeRolTutor) {
+                tutorCreado = servicioTutor.save(user.getTutor());
+            }
+            //TutoraEntity tutor = servicioTutor.findBId(Integer.SIZE);            
+            UserEntity usere = new UserEntity();
+            usere.setTutor(tutorCreado);
             usere.setUsername(user.getUsername());
-            usere.setCorreo(user.getCorreo());
+            //usere.setCorreo(user.getCorreo());
             usere.setDisabled(user.getDisabled());
             usere.setLocked(user.getLocked());
-            usere.setNombre(user.getNombre());
+            //usere.setNombre(user.getNombre());
             usere.setPassword(userService.encryptar(user.getPassword()));
             userService.save(usere, roles);
             return ResponseEntity.ok("Usuario creado correctamente");
@@ -66,8 +84,8 @@ public class UserControlador {
             //userE.setUsername(user.getUsername());
             userE.setDisabled(user.getDisabled());
             userE.setLocked(user.getLocked());
-            userE.setNombre(user.getNombre());
-            userE.setCorreo(user.getCorreo());
+            //userE.setNombre(user.getNombre());
+            //userE.setCorreo(user.getCorreo());
             userE.setPassword(userService.encryptar(user.getPassword()));
             List<UserRolEntity> roles = mapToUserRoleEntities(user);
             userService.save(userE, roles);

@@ -5,10 +5,13 @@
  */
 package com.aldea.cristo.servicios;
 
+import com.aldea.cristo.persistencia.entities.CasaEntity;
 import com.aldea.cristo.persistencia.entities.TutoraEntity;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
+import com.aldea.cristo.persistencia.repository.CasaRepository;
 import com.aldea.cristo.persistencia.repository.TutorRepository;
 import java.util.List;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,8 +22,12 @@ public class TutorService implements InterfazGenerica<TutoraEntity, Integer>{
     
     @Autowired
     private TutorRepository tutorRepository;
+    
+    @Autowired
+    private CasaRepository casaRepository;
 
     @Override
+    //@EntityGraph(attributePaths = "casa")
     public List<TutoraEntity> findAll() {
         return (List<TutoraEntity>) tutorRepository.findAll();
     }
@@ -46,5 +53,23 @@ public class TutorService implements InterfazGenerica<TutoraEntity, Integer>{
         return (List<TutoraEntity>) tutorRepository.findAllById(ids);
     }
     
+    public TutoraEntity asignarTutorToCurso(Integer idTutor, Integer idCasa){
+        Set<CasaEntity> casas=null;
+        TutoraEntity tutora = tutorRepository.findById(idTutor).get();
+        CasaEntity casae = casaRepository.findById(idCasa).get();
+        
+        casas = tutora.getCasas();
+        casas.add(casae);
+        tutora.setCasas(casas);
+        return tutorRepository.save(tutora);
+    }
+    
+    
+    public Set<CasaEntity> getCasasByTutorId(Integer tutorId) {
+        return tutorRepository.findCasasByTutoraId(tutorId);
+    }
+    
+    
+     
     
 }

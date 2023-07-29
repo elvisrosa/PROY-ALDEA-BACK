@@ -2,6 +2,7 @@ package com.aldea.cristo.web.controllers;
 
 import com.aldea.cristo.persistencia.entities.BautismoEntity;
 import com.aldea.cristo.persistencia.entities.CasaEntity;
+import com.aldea.cristo.persistencia.entities.EstudiosEntity;
 import com.aldea.cristo.persistencia.entities.MadreEntity;
 import com.aldea.cristo.persistencia.entities.NinoEntity;
 import com.aldea.cristo.persistencia.entities.PadreEntity;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/api")
@@ -49,6 +49,10 @@ public class NinoControlller {
     @Autowired
     @Qualifier("servicioMadre")
     private InterfazGenerica servicioMadre;
+    
+    @Autowired
+    @Qualifier("servicioEstudio")
+    private InterfazGenerica servicioEstudio;
 
     
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -164,6 +168,14 @@ public class NinoControlller {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    
+    @PostMapping({"/agregarEstudio/{idNino}"})
+    public ResponseEntity<EstudiosEntity> asignarEstudio(@RequestBody EstudiosEntity estudio, @PathVariable String idNino){
+        NinoEntity ninoencontrado = (NinoEntity) servicioNino.findBId(idNino);
+        estudio.setNino(ninoencontrado);
+          servicioEstudio.save(estudio);
+          return ResponseEntity.ok(estudio);
     }
 
     //END POINT AGREGAR PDF

@@ -28,7 +28,6 @@ public class userService implements UserDetailsService {
     private static final Logger logger = LoggerFactory.getLogger(userService.class);
     private final userRepository userRepository;
     private final UserRolRepository userRolRepository;
-    private String password;
 
     @Autowired
     public userService(userRepository userRepository, UserRolRepository userRolRepository) {
@@ -42,13 +41,16 @@ public class userService implements UserDetailsService {
 
         ResponseUsuario userDto = new ResponseUsuario();
         userDto.setUsername(userEntity.getUsername());
-        userDto.setNombre(userEntity.getNombre());
-        userDto.setCorreo(userEntity.getCorreo());
+        userDto.setTutor(userEntity.getTutor());
+        
+        //userDto.setNombre(userEntity.getNombre());
+        //userDto.setCorreo(userEntity.getCorreo());
         List<String> roles = new ArrayList<>();
         userEntity.getRoles().forEach(resp -> {
             roles.add(resp.getRole());
         });
         userDto.setRoles(roles);
+        logger.info("Usaurio: ".concat(userDto.toString()));
         return userDto;
     }
 
@@ -56,8 +58,8 @@ public class userService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = this.userRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException("User"
                 + username + "Not found"));
-        usuario.setCorreo(userEntity.getCorreo());
-        usuario.setNombre(userEntity.getNombre());
+        //usuario.setCorreo(userEntity.getCorreo());
+        //usuario.setNombre(userEntity.getNombre());
         usuario.setUsername(userEntity.getUsername());
 
         logger.info("Usuario de la base de datos" + userEntity);

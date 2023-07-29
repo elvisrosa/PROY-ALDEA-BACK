@@ -1,7 +1,10 @@
 package com.aldea.cristo.persistencia.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.*;
 
 @Setter
@@ -47,6 +50,7 @@ public class NinoEntity {
     
     //RELACION CON CASA 1 CASA VAROS NIÑOS
     @ManyToOne()
+    @JsonIgnore
     @JoinColumn(name = "id_casa")
     private CasaEntity casa;
     
@@ -54,12 +58,15 @@ public class NinoEntity {
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_padre")
     private PadreEntity padre;
-    
-    
+        
     //RELACION CON MADRE MANYTOONE
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "id_madre")
     private MadreEntity madre;
+    
+    //RELACION CON ESTIODS 1 NIÑO VARIOS NIVELES DE ESTUDIO
+    @OneToMany(mappedBy = "nino", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<EstudiosEntity> estudios = new HashSet<>();
 
     @Override
     public String toString() {

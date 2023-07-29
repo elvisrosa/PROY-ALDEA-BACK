@@ -21,7 +21,7 @@ public class UserEntity {
     @Column(name = "id_usuario", nullable = false)
     private Integer idUsuario;*/
 
-    private String nombre;
+    //private String nombre;
 
     @Column(name = "bloqueado")
     private Boolean locked;
@@ -32,16 +32,19 @@ public class UserEntity {
     @Column(name = "contrasena", nullable = false, length = 200)
     private String password;
     
-    private String correo;
+    //private String correo;
     
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserRolEntity> roles;
+    
+    @OneToOne
+    private TutoraEntity tutor;
       
 
     @Override
     public String toString() {
 
-        return "UserEntity{" + "username=" + username + ", nombre=" + nombre + ", locked=" + locked + ", disabled=" + disabled + ", password=" + password + ", correo=" + correo + ", roles=" + roles + '}';
+        return "UserEntity{" + "username=" + username +  ", locked=" + locked + ", disabled=" + disabled + ", password=" + password + ", correo=" + ", roles=" + roles + '}';
     }
 
     

@@ -49,28 +49,28 @@ public class authController {
         Authentication authentication = null;
         try {
             UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
-            //authentication = this.authenticationManager.authenticate(login);
+            authentication = this.authenticationManager.authenticate(login);
             //OBTENEMOS LOS DATOS DEL USUARIO AUTENTICADO
             ResponseUsuario user = userService.MostrarDatosUsuario(loginDto.getUsername());
-            this.authenticationManager.authenticate(login);
-            responseDTO = new ResponseUsuario();
-            responseDTO.setUsername(user.getUsername());
-            responseDTO.setNombre(user.getNombre());
-            responseDTO.setCorreo(user.getCorreo());
-            responseDTO.setRoles(user.getRoles());
+            //Authentication authentication = this.authenticationManager.authenticate(login);
+            //responseDTO = new ResponseUsuario();
+            //responseDTO.setUsername(user.getUsername());
+            //responseDTO.setNombre(user.getNombre());
+            //responseDTO.setCorreo(user.getCorreo());
+            //responseDTO.setRoles(user.getRoles());
             String jwt = this.jwtUtil.create(loginDto.getUsername());
-            mensaje.put("usuario", responseDTO);
+            mensaje.put("usuario", user);
             mensaje.put("estado", true);
             mensaje.put("token", jwt);
             //mensaje.put("Usuario", userService.MostrarDatosUsuario(jwtUtil.getUsername(jwt)));
-            logger.info("Usuario" + jwtUtil.getUsername(jwt));
-
+            //logger.info("Usuario" + jwtUtil.getUsername(jwt));
+            return ResponseEntity.ok(mensaje);
         } catch (AuthenticationException e) {
+            logger.error("error: ".concat(e.getMessage()));
             mensaje.put("estado", false);
             mensaje.put("mensaje", "Credenciales invalidas");
-           ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje);
         }
-        return ResponseEntity.ok(mensaje);
 
     }
 }
