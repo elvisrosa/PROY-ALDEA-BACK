@@ -7,4 +7,8 @@ public interface InterfazGenerica<T, M> {
     T findBId(M cedula);
     void delete(M cedula);
     T save(T e);
+    
+     default List<T> findAllBoysByIdHouse(Integer idhouse) {
+        throw new UnsupportedOperationException("Método no implementado");
+    }
 }

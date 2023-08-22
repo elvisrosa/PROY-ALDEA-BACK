@@ -30,28 +30,6 @@ public class BautismoEntity {
     //private List<NinoEntity> niños;
     //RELACION ONETONE CON NINOENTITY 1 NIÑO Y 1 BAUTIZO
     
-
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (idBautismo != null ? idBautismo.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-
-        if (!(object instanceof BautismoEntity)) {
-            return false;
-        }
-        BautismoEntity other = (BautismoEntity) object;
-        if ((this.idBautismo == null && other.idBautismo != null) || (this.idBautismo != null && !this.idBautismo.equals(other.idBautismo))) {
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public String toString() {
         return "{" + "fecha=" + fecha + ", descripcionPadrino=" + descripcionPadrino + ", matrimoniosPadres=" + matrimoniosPadres  + '}';

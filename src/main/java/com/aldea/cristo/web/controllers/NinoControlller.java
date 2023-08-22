@@ -177,6 +177,11 @@ public class NinoControlller {
           servicioEstudio.save(estudio);
           return ResponseEntity.ok(estudio);
     }
+    
+    @GetMapping("/niños/listarporcasa/{idCasa}")
+    public List<NinoEntity> findAllBoysByIdHouse(@PathVariable Integer idCasa){
+           return servicioNino.findAllBoysByIdHouse(idCasa);
+    }
 
     //END POINT AGREGAR PDF
     /*

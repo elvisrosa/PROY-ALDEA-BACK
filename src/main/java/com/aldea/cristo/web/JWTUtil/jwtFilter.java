@@ -55,6 +55,8 @@ public class jwtFilter extends OncePerRequestFilter {
             //CARGAR USUARIO DESDE USERDETAILSERVICE
             String username = jwtUtil.getUsername(jwt);
             User user = (User) this.userDetailService.loadUserByUsername(username);
+            logger.info("User desde jwtFilter".concat(user.toString()));   
+            System.out.println("User desde jwtFilter".concat(user.toString()));
 
             //CARGAR AL USUARIO EN EL CONTEXTO DE SEGURIDAD
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(

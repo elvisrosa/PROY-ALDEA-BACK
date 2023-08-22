@@ -42,6 +42,8 @@ public class userService implements UserDetailsService {
         ResponseUsuario userDto = new ResponseUsuario();
         userDto.setUsername(userEntity.getUsername());
         userDto.setTutor(userEntity.getTutor());
+        userDto.setNombres(userEntity.getNombres());
+        userDto.setApellidos(userEntity.getApellidos());
         
         //userDto.setNombre(userEntity.getNombre());
         //userDto.setCorreo(userEntity.getCorreo());
@@ -118,6 +120,11 @@ public class userService implements UserDetailsService {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         logger.info("PAsswordEncryptada: " + encoder.encode(password));
         return encoder.encode(password);
+    }
+    
+    public String desencryptar(String password){
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            return null;
     }
 }
 

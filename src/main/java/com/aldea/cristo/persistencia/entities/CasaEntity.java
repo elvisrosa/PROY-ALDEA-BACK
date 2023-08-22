@@ -21,10 +21,9 @@ public class CasaEntity implements Serializable {
     private Integer idCasa;
 
     @Column(name = "numero_casa")
-    private String numeroCasa;
-
-    @Column(length = 10)
-    private String telefono;
+    private String numerocasa;
+    
+    private String nombrecasa;
 
     private String direccion;
 
@@ -37,7 +36,7 @@ public class CasaEntity implements Serializable {
     @Column(name = "estado", nullable = true)
     private Integer estado;
 
-    @OneToOne(mappedBy = "casa", cascade = CascadeType.ALL, orphanRemoval = true) // orphanRemoval = true
+    @OneToOne(mappedBy = "casa", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER) // orphanRemoval = true
     private BitacoraEntity bitacora;
 
     //@JsonIgnore
@@ -46,7 +45,7 @@ public class CasaEntity implements Serializable {
     
     @Override
     public String toString() {
-        return "CasaEntity{" + "idCasa=" + idCasa + ", numeroCasa=" + numeroCasa + ", telefono=" + telefono + ", direccion=" + direccion + ", ni\u00f1os=" + niños + '}';
+        return "CasaEntity{" + "idCasa=" + idCasa + ", numeroCasa=" + numerocasa + ", direccion=" + direccion + ", ni\u00f1os=" + niños + '}';
     }
  
 

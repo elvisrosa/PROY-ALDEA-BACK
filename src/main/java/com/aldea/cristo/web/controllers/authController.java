@@ -34,6 +34,7 @@ public class authController {
     private final AuthenticationManager authenticationManager;
     private final jwtUtil jwtUtil;
     private final userService userService;
+    
 
     @Autowired
     public authController(AuthenticationManager authenticationManager, jwtUtil jwtUtil, userService userService) {
@@ -48,6 +49,7 @@ public class authController {
         ResponseUsuario responseDTO;
         Authentication authentication = null;
         try {
+            logger.info("loginDto.toString()".concat(loginDto.toString()));
             UsernamePasswordAuthenticationToken login = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
             authentication = this.authenticationManager.authenticate(login);
             //OBTENEMOS LOS DATOS DEL USUARIO AUTENTICADO

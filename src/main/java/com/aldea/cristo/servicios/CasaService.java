@@ -3,7 +3,6 @@ package com.aldea.cristo.servicios;
 import com.aldea.cristo.persistencia.entities.CasaEntity;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
 import com.aldea.cristo.persistencia.repository.CasaRepository;
-import com.aldea.cristo.persistencia.repository.TutorRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

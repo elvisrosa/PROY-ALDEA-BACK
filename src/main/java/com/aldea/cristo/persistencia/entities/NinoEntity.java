@@ -44,23 +44,23 @@ public class NinoEntity {
 
     //RELACION ONETOONE CON BAUTIZO
     //@JsonIgnore
-    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_bautismo")
     private BautismoEntity bautizo;
     
     //RELACION CON CASA 1 CASA VAROS NIÑOS
     @ManyToOne()
-    @JsonIgnore
+    //@JsonIgnore
     @JoinColumn(name = "id_casa")
     private CasaEntity casa;
     
     //RELACION CON PADRE MANYTOONE
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_padre")
     private PadreEntity padre;
         
     //RELACION CON MADRE MANYTOONE
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id_madre")
     private MadreEntity madre;
     

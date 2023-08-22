@@ -42,6 +42,7 @@ public class UserControlador {
     public ResponseEntity<?> save(@RequestBody UserEntity user) {
         List<UserRolEntity> roles = mapToUserRoleEntities(user);
         boolean existeRolTutor = roles.stream().anyMatch(resp -> "TUTOR".equals(resp.getRole()));
+        logger.info("UserEntity".concat(user.toString()));
         /*roles.forEach(resp -> {
             if ("TUTOR".equals(resp.getRole())) {
                 existeRolTutor = true;
@@ -62,11 +63,11 @@ public class UserControlador {
             //usere.setNombre(user.getNombre());
             usere.setPassword(userService.encryptar(user.getPassword()));
             userService.save(usere, roles);
-            return ResponseEntity.ok("Usuario creado correctamente");
+            return ResponseEntity.status(HttpStatus.CREATED).body(usere);
+            //return ResponseEntity.ok("Usuario creado correctamente");
 
         } catch (Exception e) {
             e.getStackTrace();
-            logger.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

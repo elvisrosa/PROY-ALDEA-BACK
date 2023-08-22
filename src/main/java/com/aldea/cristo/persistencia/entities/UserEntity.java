@@ -21,7 +21,11 @@ public class UserEntity {
     @Column(name = "id_usuario", nullable = false)
     private Integer idUsuario;*/
 
-    //private String nombre;
+    @Column(name = "nombre")
+    private String nombres;
+    
+    @Column(name = "apellidos")
+    private String apellidos;
 
     @Column(name = "bloqueado")
     private Boolean locked;
@@ -37,7 +41,7 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<UserRolEntity> roles;
     
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private TutoraEntity tutor;
       
 

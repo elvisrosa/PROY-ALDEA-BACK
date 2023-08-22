@@ -6,12 +6,18 @@
 package com.aldea.cristo.persistencia.repository;
 
 import com.aldea.cristo.persistencia.entities.NinoEntity;
+import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 /**
  *
  * @author elvis
  */
-public interface NinoRepository extends CrudRepository<NinoEntity, String>{
-    
+public interface NinoRepository extends CrudRepository<NinoEntity, String> {
+
+    @Query("SELECT n FROM NinoEntity n Where n.casa.idCasa=:idCasa")
+    List<NinoEntity> findNinoByIdCasa(@Param("idCasa") Integer idCasa);
+
 }

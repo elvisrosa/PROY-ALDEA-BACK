@@ -13,6 +13,9 @@ public class ResponseUsuario {
     private String username;
     private List<String> roles;
     private TutoraEntity tutor;
+    private String nombres;
+    private String apellidos;
+    private String correo;
  
     
 }

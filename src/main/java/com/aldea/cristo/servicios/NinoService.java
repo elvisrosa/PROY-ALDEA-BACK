@@ -17,7 +17,7 @@ public class NinoService implements InterfazGenerica<NinoEntity, String> {
     @Override
     @Transactional(readOnly = true)
     public List<NinoEntity> findAll() {
-        return  (List<NinoEntity>) service.findAll();
+        return (List<NinoEntity>) service.findAll();
     }
 
     @Override
@@ -37,6 +37,11 @@ public class NinoService implements InterfazGenerica<NinoEntity, String> {
     public NinoEntity save(NinoEntity e) {
         return service.save(e);
     }
-    
+
+    @Override
+    @Transactional
+    public List<NinoEntity> findAllBoysByIdHouse(Integer idhouse) {
+        return service.findNinoByIdCasa(idhouse);
+    }
 
 }
