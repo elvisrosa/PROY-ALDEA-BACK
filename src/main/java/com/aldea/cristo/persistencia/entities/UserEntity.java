@@ -20,10 +20,9 @@ public class UserEntity {
     /*@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_usuario", nullable = false)
     private Integer idUsuario;*/
-
     @Column(name = "nombre")
     private String nombres;
-    
+
     @Column(name = "apellidos")
     private String apellidos;
 
@@ -32,31 +31,28 @@ public class UserEntity {
 
     @Column(name = "deshabilitado")
     private Boolean disabled;
-     
-    @Column(name = "contrasena", nullable = false, length = 200)
+
+    @Column(name = "contrasena", length = 200)
     private String password;
-    
+
     //private String correo;
-    
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, 
+        cascade = {CascadeType.MERGE, 
+            CascadeType.REMOVE, 
+                CascadeType.PERSIST,
+                    })
     private List<UserRolEntity> roles;
-    
-    @OneToOne(cascade = CascadeType.ALL)
+
+    @OneToOne(cascade = {
+        CascadeType.REMOVE,
+                CascadeType.MERGE,
+                    CascadeType.PERSIST
+    }, orphanRemoval = true)
     private TutoraEntity tutor;
-      
 
     @Override
     public String toString() {
-
-        return "UserEntity{" + "username=" + username +  ", locked=" + locked + ", disabled=" + disabled + ", password=" + password + ", correo=" + ", roles=" + roles + '}';
+        return "UserEntity{" + "username=" + username + ", locked=" + locked + ", disabled=" + disabled + ", password=" + password + ", correo=" + ", roles=" + roles + '}';
     }
-
-    
- 
-    
-    
-    
-    
-    
 
 }

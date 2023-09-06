@@ -22,21 +22,25 @@ public class TutoraEntity implements Serializable {
     private String nombre;
 
     private String apellido;
-    
+
     private String correo;
-    
+
     private String telefono;
-    
+
     private String cedula;
-    
+
+    @PreRemove
+    private void preRemove() {
+        casas.clear();
+    }
 
     @JsonIgnore
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
-    name = "tutor_casa",
+            name = "tutor_casa",
             joinColumns = @JoinColumn(name = "tutor_id", referencedColumnName = "id_tutora"),
             inverseJoinColumns = @JoinColumn(name = "casa_id", referencedColumnName = "id_casa")
     )
     private Set<CasaEntity> casas = new HashSet<>();
-}
 
+}

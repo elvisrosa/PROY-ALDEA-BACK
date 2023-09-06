@@ -31,7 +31,7 @@ public class PadreEntity {
     private String telefono;
 
     //MUCHOS  NIÑOS - 1 PADRE
-    @OneToMany(mappedBy = "padre", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "padre", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<NinoEntity> niños;
 

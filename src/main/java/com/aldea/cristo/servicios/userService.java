@@ -44,7 +44,7 @@ public class userService implements UserDetailsService {
         userDto.setTutor(userEntity.getTutor());
         userDto.setNombres(userEntity.getNombres());
         userDto.setApellidos(userEntity.getApellidos());
-        
+
         //userDto.setNombre(userEntity.getNombre());
         //userDto.setCorreo(userEntity.getCorreo());
         List<String> roles = new ArrayList<>();
@@ -86,19 +86,18 @@ public class userService implements UserDetailsService {
         return userRepository.findById(username).orElse(null);
     }
 
-    //REVISA QUE ESTO QUEDO PENDIENTE -- ESTA DE PUTA MADRE ESTO
     @Transactional
     public void save(UserEntity user, List<UserRolEntity> roles) {
-        List<UserRolEntity> rol = userRolRepository.findByUsername(user.getUsername());
+        /*List<UserRolEntity> rol = userRolRepository.findByUsername(user.getUsername());
         if (rol.size() > 0) {
             rol.forEach(id -> {
-                logger.info("Roles" + id.getRole() + "Username" + id.getUsername());
+                logger.info("Role " + id.getRole() + "Username " + id.getUsername());
                 //UserRoleId userEd = new UserRoleId();
                // userEd.setUsername(id.getUsername());
                 //userEd.setRole(id.getRole());
                 userRolRepository.deleteByUsername(id.getUsername());
             });
-        }
+        }*/
 
         userRepository.save(user);
 
@@ -112,6 +111,11 @@ public class userService implements UserDetailsService {
 
     }
 
+    @Transactional
+    public void saveUpdate(UserEntity user) {
+        userRepository.save(user);
+    }
+
     public List<UserEntity> findAll() {
         return (List<UserEntity>) userRepository.findAll();
     }
@@ -121,11 +125,12 @@ public class userService implements UserDetailsService {
         logger.info("PAsswordEncryptada: " + encoder.encode(password));
         return encoder.encode(password);
     }
-    
-    public String desencryptar(String password){
-            PasswordEncoder encoder = new BCryptPasswordEncoder();
-            return null;
+
+    public String desencryptar(String password) {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return null;
     }
+
 }
 
 /*private String[] getAuthorities(String role){

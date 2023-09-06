@@ -61,7 +61,8 @@ public class UserRoleId implements Serializable {
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }
-        return Objects.equals(this.role, other.role);
+        return Objects.equals(this.role, other.role) && Objects.equals(this.username, other.username); 
+//&& Objects.equals(this.username, other.username
     }
 
 }

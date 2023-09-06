@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
+import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,12 +50,11 @@ public class NinoControlller {
     @Autowired
     @Qualifier("servicioMadre")
     private InterfazGenerica servicioMadre;
-    
+
     @Autowired
     @Qualifier("servicioEstudio")
     private InterfazGenerica servicioEstudio;
 
-    
     //@PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/niños")
     public List<NinoEntity> listarNiños() {
@@ -68,11 +68,7 @@ public class NinoControlller {
 
     @PostMapping("/niños/crear")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<NinoEntity> crear(@RequestBody NinoEntity datos) {
-
-        System.out.println("Datos: " + datos);
-        System.out.println("Madre: " + datos.getMadre());
-
+    public ResponseEntity<?> crear(@RequestBody NinoEntity datos) {
         try {
             //NIÑO
             NinoEntity nino = new NinoEntity();
@@ -83,6 +79,7 @@ public class NinoControlller {
             nino.setLugarNacimiento(datos.getLugarNacimiento());
             nino.setEdad(datos.getEdad());
             nino.setSexo(datos.getSexo());
+            nino.setFechaNacimiento(datos.getFechaNacimiento());
 
             //BAUTISMO
             if (datos.getBautizo() != null) {
@@ -126,25 +123,27 @@ public class NinoControlller {
             }
             //REGISTRANDO TODOS LOS DATOS
             servicioNino.save(nino);
-            return ResponseEntity.ok(nino);
+            return ResponseEntity.ok().body("{\"message\": \"Registro guardado con éxito\"}");
+
         } catch (Exception e) {
-            logger.error("dATOS DEL NIÑO ACTUAL" + datos.getCasa().getIdCasa());
             e.getStackTrace();
-            logger.error(e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error al crear registro\"}");
+
         }
 
     }
 
     @DeleteMapping("/eliminar/{cedula}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable String cedula) {
+    public ResponseEntity<?> delete(@PathVariable String cedula) {
         try {
             servicioNino.delete(cedula);
+        }catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Registro no existe\"}");
         } catch (Exception e) {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erorr al eliminar el usuario, intentalo nuevamente");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error al eliminar registro\"}");
         }
-            ResponseEntity.ok("Eliminado");
+        return ResponseEntity.ok().body("{\"message\": \"Registro eliminado con éxito\"}");
     }
 
     @PutMapping("/niños/{cedula}")
@@ -169,18 +168,18 @@ public class NinoControlller {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-    
+
     @PostMapping({"/agregarEstudio/{idNino}"})
-    public ResponseEntity<EstudiosEntity> asignarEstudio(@RequestBody EstudiosEntity estudio, @PathVariable String idNino){
+    public ResponseEntity<EstudiosEntity> asignarEstudio(@RequestBody EstudiosEntity estudio, @PathVariable String idNino) {
         NinoEntity ninoencontrado = (NinoEntity) servicioNino.findBId(idNino);
         estudio.setNino(ninoencontrado);
-          servicioEstudio.save(estudio);
-          return ResponseEntity.ok(estudio);
+        servicioEstudio.save(estudio);
+        return ResponseEntity.ok(estudio);
     }
-    
+
     @GetMapping("/niños/listarporcasa/{idCasa}")
-    public List<NinoEntity> findAllBoysByIdHouse(@PathVariable Integer idCasa){
-           return servicioNino.findAllBoysByIdHouse(idCasa);
+    public List<NinoEntity> findAllBoysByIdHouse(@PathVariable Integer idCasa) {
+        return servicioNino.findAllBoysByIdHouse(idCasa);
     }
 
     //END POINT AGREGAR PDF

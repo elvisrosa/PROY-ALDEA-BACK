@@ -10,12 +10,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +36,6 @@ public class authController {
     private final AuthenticationManager authenticationManager;
     private final jwtUtil jwtUtil;
     private final userService userService;
-    
 
     @Autowired
     public authController(AuthenticationManager authenticationManager, jwtUtil jwtUtil, userService userService) {
@@ -54,25 +55,23 @@ public class authController {
             authentication = this.authenticationManager.authenticate(login);
             //OBTENEMOS LOS DATOS DEL USUARIO AUTENTICADO
             ResponseUsuario user = userService.MostrarDatosUsuario(loginDto.getUsername());
-            //Authentication authentication = this.authenticationManager.authenticate(login);
-            //responseDTO = new ResponseUsuario();
-            //responseDTO.setUsername(user.getUsername());
-            //responseDTO.setNombre(user.getNombre());
-            //responseDTO.setCorreo(user.getCorreo());
-            //responseDTO.setRoles(user.getRoles());
             String jwt = this.jwtUtil.create(loginDto.getUsername());
             mensaje.put("usuario", user);
             mensaje.put("estado", true);
             mensaje.put("token", jwt);
-            //mensaje.put("Usuario", userService.MostrarDatosUsuario(jwtUtil.getUsername(jwt)));
-            //logger.info("Usuario" + jwtUtil.getUsername(jwt));
             return ResponseEntity.ok(mensaje);
-        } catch (AuthenticationException e) {
-            logger.error("error: ".concat(e.getMessage()));
-            mensaje.put("estado", false);
-            mensaje.put("mensaje", "Credenciales invalidas");
+        } catch (UsernameNotFoundException e) {
+            mensaje.put("message", "El nombre de usuario no existe");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(mensaje);
+        } catch (BadCredentialsException e) {
+            mensaje.put("message", "Credenciales inválidas");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(mensaje);
+        } catch (AuthenticationException e) {
+            mensaje.put("message", "Error al iniciar sesión, comunícate con desarrollo");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mensaje);
         }
 
     }
+
+    
 }

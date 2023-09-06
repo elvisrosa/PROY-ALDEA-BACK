@@ -2,23 +2,30 @@ package com.aldea.cristo.web.controllers;
 
 import com.aldea.cristo.persistencia.entities.BitacoraEntity;
 import com.aldea.cristo.persistencia.entities.CasaEntity;
-import com.aldea.cristo.persistencia.entities.TutoraEntity;
-import com.aldea.cristo.persistencia.interfaces.InterfazGenerica;
+import com.aldea.cristo.servicios.BitacoraService;
 import com.aldea.cristo.servicios.CasaService;
 import com.aldea.cristo.servicios.TutorService;
-import com.aldea.cristo.servicios.UploadServices;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.*;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 //@CrossOrigin(origins = {"http://localhost:4200"})
 @RestController
@@ -35,6 +42,16 @@ public class CasaController {
     //@Qualifier("servicioTutor")
     private TutorService servicioTutor;
 
+    @Autowired
+    private MediaControlador controlador;
+    
+    @Autowired
+    private BitacoraService bitacoraService;
+
+    /*@Autowired
+    public CasaController(MediaControlador mediaControlador) {
+        this.controlador = mediaControlador;
+    }*/
     //@Autowired
     //private UploadServices uploadService;
     @GetMapping("/listar")
@@ -49,31 +66,26 @@ public class CasaController {
 
     @PostMapping("/crear")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> crear(@RequestBody CasaEntity casa) {
-        try {
-            BitacoraEntity bitacora = new BitacoraEntity();
-            //bitacora.setArchivo(byteArchivo);
-            bitacora.setDescripcion("Esta bitacora es perteneciente de la casa: ".concat(casa.getNumerocasa()));
-            bitacora.setFechaRegistro(new Timestamp(System.currentTimeMillis()));
-            casa.setBitacora(bitacora);
-            casa.setEstado(1);
-            bitacora.setCasa(casa);
-            servicioCasa.save(casa);
-
-            return ResponseEntity.ok(casa);
-
-        } catch (Exception e) {
-            e.getStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<?> crear(@RequestBody CasaEntity casa) throws IOException {
+        BitacoraEntity bitacora = new BitacoraEntity();
+        //bitacora.setArchivo(byteArchivo);
+        //casa.setBitacora(bitacora);
+        casa.setEstado(1);
+        CasaEntity casa_creada = servicioCasa.save(casa);
+        System.out.println("Casa creada " + casa_creada);
+        bitacora.setDescripcion("Esta bitacora es perteneciente de la casa: ".concat(casa_creada.getNumerocasa()));
+        bitacora.setFechaRegistro(new Timestamp(System.currentTimeMillis()));
+        String urlBitacora = controlador.save_bitacora(casa_creada.getIdCasa());
+        bitacora.setUrl(urlBitacora);
+        bitacora.setCasa(casa_creada);
+        
+        bitacoraService.save(bitacora);
+        //casa_creada.setBitacora(bitacora);
+        // controlador.uploadFile();
+        //bitacora.setUrl(urlBitacora);
+        return ResponseEntity.ok(casa);
     }
 
-    //File newFile = new File("uploads", file.getOriginalFilename());
-    //newFile.createNewFile();
-    //try (FileWriter writer = new FileWriter(newFile)) {
-    //writer.write(byteArchivo);
-    //System.out.println(Arrays.toString(byteArchivo));
-    //}
     @PutMapping("/actualizar/{idcasa}")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CasaEntity> actualizarCasa(@RequestBody CasaEntity casa, @PathVariable Integer idcasa) {
@@ -83,14 +95,7 @@ public class CasaController {
             casaEncontrada.setDireccion(casa.getDireccion());
             casaEncontrada.setNumerocasa(casa.getNumerocasa());
             casaEncontrada.setNombrecasa(casa.getNombrecasa());
-            //casaEncontrada.setTelefono(casa.getTelefono());
-
-            /*BitacoraEntity bitc = new BitacoraEntity();
-            bitc.setDescripcion(casa.getBitacora().getDescripcion());
-            bitc.setCasa(casa);
-            casaEncontrada.setBitacora(bitc);*/
             servicioCasa.save(casaEncontrada);
-
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -118,18 +123,28 @@ public class CasaController {
 
     @DeleteMapping("/eliminar/{id}")
     public ResponseEntity<?> eliminar(@PathVariable Integer id) {
-        Map<String, Object> mensaje = new HashMap<>();
         try {
             servicioCasa.delete(id);
-            mensaje.put("respuesta", "Casa eliminada");
-
+            return ResponseEntity.ok().body("{\"message\": \"Registro eliminado con éxito\", \"status\": \"succes\"}");
+        } catch (DataIntegrityViolationException e) {
+            String errorMessage = "Registro no puede ser eliminado porque aun tiene registros asignados (NIÑOS-TUTORES), vacia la casa y vuelve a intentarlo";
+            return ResponseEntity.ok().body("{\"message\": \"" + errorMessage + "\", \"status\": \"error\"}");
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("{\"message\": \"Registro no existe\", \"status\": \"error\"}");
         } catch (Exception e) {
-            mensaje.put("respuesta", "Error al eliminar, verifica que la casa a eliminar no tenga alumnos aún en ella");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(mensaje);
-            //return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("{\"message\": \"Error al eliminar registro\", \"status\": \"error\"}");
         }
-        return ResponseEntity.ok(mensaje);
 
     }
-    
+
+    private String extractForeignKeyErrorMessage(DataIntegrityViolationException e) {
+        String[] lines = e.getMessage().split("\n");
+        String lastLine = lines[lines.length - 1];
+        if (lastLine.contains("ERROR:")) {
+            return lastLine.substring(lastLine.indexOf("ERROR:") + 7);
+        } else {
+            return "Error de integridad en la base de datos.";
+        }
+    }
+
 }

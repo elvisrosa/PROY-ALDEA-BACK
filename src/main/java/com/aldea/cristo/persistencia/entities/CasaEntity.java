@@ -31,7 +31,7 @@ public class CasaEntity implements Serializable {
     @JsonIgnore
     private List<NinoEntity> niños;
 
-    private String img;
+    //private String img;
     
     @Column(name = "estado", nullable = true)
     private Integer estado;
@@ -45,7 +45,7 @@ public class CasaEntity implements Serializable {
     
     @Override
     public String toString() {
-        return "CasaEntity{" + "idCasa=" + idCasa + ", numeroCasa=" + numerocasa + ", direccion=" + direccion + ", ni\u00f1os=" + niños + '}';
+        return "CasaEntity{" + "idCasa=" + idCasa + ", numeroCasa=" + numerocasa + ", direccion=" + direccion + ", Estado=" + estado +", niños=" + niños + '}';
     }
  
 

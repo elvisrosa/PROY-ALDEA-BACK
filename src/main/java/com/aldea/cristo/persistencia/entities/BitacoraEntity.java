@@ -29,6 +29,9 @@ public class BitacoraEntity {
     @Column(name = "descripcion")
     private String descripcion;
     
+    @Column(name = "url_bitacora")
+    private String url;
+    
     //@Lob
     @Column(name = "archivo_bitacora")
     private byte[] archivo;
